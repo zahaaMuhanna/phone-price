@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { AppData, Category, Product } from "@/types";
-import { buildSeedData } from "@/lib/seed-data";
+// import { buildSeedData } from "@/lib/seed-data";
 
 const STORAGE_KEY = "muhanna-price:data:v1";
 
@@ -16,16 +16,17 @@ function emit() {
 
 function load(): AppData {
   if (typeof window === "undefined") return { categories: [], products: [] };
+
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
+
     if (!raw) {
-      const seed = buildSeedData();
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-      return seed;
+      return { categories: [], products: [] };
     }
+
     return JSON.parse(raw) as AppData;
   } catch {
-    return buildSeedData();
+    return { categories: [], products: [] };
   }
 }
 
