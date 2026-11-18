@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteProduct } from "@/lib/store";
+import { errorMessage, toast } from "@/lib/toast";
 import type { Product } from "@/types";
 
 interface DeleteProductDialogProps {
@@ -35,7 +36,11 @@ export function DeleteProductDialog({ open, onOpenChange, product }: DeleteProdu
           <AlertDialogCancel>إلغاء</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              deleteProduct(product.id);
+              try {
+                deleteProduct(product.id);
+              } catch (e) {
+                toast.error(errorMessage(e));
+              }
               onOpenChange(false);
             }}
           >

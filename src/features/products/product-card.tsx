@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format";
 import { ProductFormDialog } from "@/features/products/product-form-dialog";
 import { DeleteProductDialog } from "@/features/products/delete-product-dialog";
+import { ProductSaleDialog } from "@/features/sales/product-sale-dialog";
 import type { SearchableProduct } from "@/lib/search";
 
 interface ProductCardProps {
@@ -16,10 +17,23 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [saleOpen, setSaleOpen] = useState(false);
 
   return (
     <div className="group relative flex items-center justify-between gap-4 rounded-xl border bg-card p-4 transition-colors hover:border-foreground/20">
-      <div className="min-w-0 flex-1">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={`بيع ${product.name}`}
+        onClick={() => setSaleOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setSaleOpen(true);
+          }
+        }}
+        className="min-w-0 flex-1 cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
         <p className="truncate text-base font-semibold">{product.name}</p>
         <Badge variant="secondary" className="mt-1.5">
           {product.categoryName}
@@ -30,7 +44,10 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
-        <span className="text-2xl font-bold tabular-nums whitespace-nowrap">
+        <span
+          className="cursor-pointer text-2xl font-bold tabular-nums whitespace-nowrap"
+          onClick={() => setSaleOpen(true)}
+        >
           {formatPrice(product.priceAgorot)}
         </span>
         <div className="flex items-center gap-1">
@@ -53,6 +70,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
 
+      <ProductSaleDialog open={saleOpen} onOpenChange={setSaleOpen} product={product} />
       <ProductFormDialog open={editOpen} onOpenChange={setEditOpen} product={product} />
       <DeleteProductDialog open={deleteOpen} onOpenChange={setDeleteOpen} product={product} />
     </div>
