@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteCategory } from "@/lib/store";
+import { errorMessage, toast } from "@/lib/toast";
 import type { Category } from "@/types";
 
 interface DeleteCategoryDialogProps {
@@ -35,7 +36,11 @@ export function DeleteCategoryDialog({ open, onOpenChange, category }: DeleteCat
           <AlertDialogCancel>إلغاء</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              deleteCategory(category.id);
+              try {
+                deleteCategory(category.id);
+              } catch (e) {
+                toast.error(errorMessage(e));
+              }
               onOpenChange(false);
             }}
           >

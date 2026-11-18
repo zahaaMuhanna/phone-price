@@ -55,10 +55,15 @@ function CategoryForm({ category, onDone }: CategoryFormProps) {
       return;
     }
 
-    if (isEdit && category) {
-      updateCategory(category.id, trimmed);
-    } else {
-      addCategory(trimmed);
+    try {
+      if (isEdit && category) {
+        updateCategory(category.id, trimmed);
+      } else {
+        addCategory(trimmed);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر الحفظ");
+      return;
     }
     onDone();
   }

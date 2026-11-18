@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Tags, Search } from "lucide-react";
+import { Tags, Search, LayoutDashboard, ReceiptText, History, Users } from "lucide-react";
 import { AddProductButton } from "@/features/products/add-product-button";
 
 const navItems = [
   { href: "/", label: "أسعار المنتجات", icon: Search },
+  { href: "/sales/new", label: "فاتورة جديدة", icon: ReceiptText },
+  { href: "/sales", label: "المبيعات", icon: History },
+  { href: "/customers", label: "العملاء", icon: Users },
+  { href: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
   { href: "/categories", label: "الأصناف", icon: Tags },
 ];
 

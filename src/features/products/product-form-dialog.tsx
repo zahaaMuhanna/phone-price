@@ -64,6 +64,7 @@ function ProductForm({ product, categories, onDone }: ProductFormProps) {
     product ? String(agorotToShekels(product.priceAgorot)) : ""
   );
   const [notes, setNotes] = useState(product?.notes ?? "");
+  const [imageUrl, setImageUrl] = useState(product?.imageUrl ?? "");
   const [error, setError] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
@@ -90,12 +91,18 @@ function ProductForm({ product, categories, onDone }: ProductFormProps) {
       categoryId,
       priceAgorot: shekelsToAgorot(priceNumber),
       notes: notes.trim() || undefined,
+      imageUrl: imageUrl.trim() || undefined,
     };
 
-    if (isEdit && product) {
-      updateProduct(product.id, input);
-    } else {
-      addProduct(input);
+    try {
+      if (isEdit && product) {
+        updateProduct(product.id, input);
+      } else {
+        addProduct(input);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر الحفظ");
+      return;
     }
 
     onDone();
@@ -160,6 +167,18 @@ function ProductForm({ product, categories, onDone }: ProductFormProps) {
             onChange={(e) => setNotes(e.target.value)}
             placeholder="ملاحظات إضافية..."
             rows={2}
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="product-image">رابط صورة المنتج (اختياري)</Label>
+          <Input
+            id="product-image"
+            type="url"
+            dir="ltr"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="https://..."
           />
         </div>
 
