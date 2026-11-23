@@ -58,6 +58,8 @@ export function SaleBuilder({ initialProductId, allowAddProducts = false, onSave
     return p ? [{ key: nextLineKey(), productId: p.id, qty: "1", price: toInput(p.priceAgorot) }] : [];
   });
   const [query, setQuery] = useState("");
+  // The invoice page always shows the product search; the quick-sale dialog reveals it on demand.
+  const [searchOpen, setSearchOpen] = useState(allowAddProducts);
   const [method, setMethod] = useState<PaymentMethod>("cash");
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [linkCustomer, setLinkCustomer] = useState(false);
@@ -146,7 +148,7 @@ export function SaleBuilder({ initialProductId, allowAddProducts = false, onSave
 
   return (
     <form onSubmit={submit} className="grid gap-4">
-      {allowAddProducts && (
+      {searchOpen && (
         <div className="relative">
           <Search className="pointer-events-none absolute start-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -165,7 +167,13 @@ export function SaleBuilder({ initialProductId, allowAddProducts = false, onSave
             }}
           />
           {query.trim() && (
-            <div className="absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-xl border bg-popover p-1 shadow-lg">
+            <div
+              className={
+                allowAddProducts
+                  ? "absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-xl border bg-popover p-1 shadow-lg"
+                  : "mt-1 max-h-60 overflow-y-auto rounded-xl border bg-popover p-1"
+              }
+            >
               {results.length === 0 ? (
                 <p className="px-3 py-3 text-sm text-muted-foreground">لم نجد أي منتج</p>
               ) : (
@@ -260,7 +268,7 @@ export function SaleBuilder({ initialProductId, allowAddProducts = false, onSave
                     onFocus={(e) => e.currentTarget.select()}
                   />
                   <span className="hidden text-end text-sm font-semibold tabular-nums sm:block">{formatPrice(lineTotal)}</span>
-                  {allowAddProducts || lines.length > 1 ? (
+                  {searchOpen || lines.length > 1 ? (
                     <Button
                       type="button"
                       variant="ghost"
@@ -279,6 +287,13 @@ export function SaleBuilder({ initialProductId, allowAddProducts = false, onSave
             );
           })}
         </div>
+      )}
+
+      {!searchOpen && (
+        <Button type="button" variant="outline" className="w-full border-dashed" onClick={() => setSearchOpen(true)}>
+          <Plus className="size-4" />
+          إضافة منتج آخر لنفس الفاتورة
+        </Button>
       )}
 
       <div className="grid gap-3 rounded-xl border p-4">
